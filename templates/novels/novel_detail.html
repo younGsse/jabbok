@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-3">
+    <div class="text-center border-bottom">
+        <h2>{{ novel.subtitle }}</h2>
+    </div>
+    <div>
+        <p>{{ novel.content }}</p>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load board_filter %}
+
+{% block content %}
+
+<div class="container my-3">
+    {% if messages %}
+    <div  class="alert alert-danger" role="alert">
+        {% for message in messages %}
+        <strong>{{ message.tags }}</strong>
+        <ul><li>{{ message.message }}</li></ul>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div>
+        <form method="get">
+            <div class="input-group">
+                <select name="part" id="part" type="input">
+                    <option value="none" selected>-----select-----</option>
+                    <option value="subject">subject</option>
+                    <option value="subcon">subject + content</option>
+                    <option value="author">author</option>
+                </select>
+                <input type="search" name="search" id="search" class="form-control" value="{{ request.GET.search }}">
+                <button type="submit" class="btn btn-outline-primary">search</button>
+            </div>
+        </form>
+    </div>
+    <div>
+    <table class="table">
+        <thead>
+        <tr class="table-light text-center">
+            <th>index</th>
+            <th style="width:50%">subject</th>
+            <th>author</th>
+            <th>creation date</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        {% if question_list %}
+        {% for question in question_list %}
+        <tr class="text-center">
+            <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
+            <td class="text-left">
+                <a href="{% url 'board:detail' question.id %}">{{ question.subject }}</a>
+                {% if question.answer_set.count %}<small style="color: red;">[{{ question.answer_set.count }}]</small>{% endif %}
+            </td>
+            <td>{{ question.author }}</td>
+            <td>{{ question.createDate }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <td></td>
+        <td class="text-center">No content</td>
+        <td></td>
+        {% endif %}
+        </tbody>
+    </table>
+    </div>
+
+    <!-- paging -->
+    <ul class="pagination justify-content-center">
+        {% if question_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.previous_page_number }}">prev</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">prev</a>
+        </li>
+        {% endif %}
+
+        {% for page_number in question_list.paginator.page_range %}
+        {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+            {% if page_number == question_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        {% if question_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.next_page_number }}">next</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">next</a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div>
+        <a href="{% url 'board:question_create' %}" class="btn btn-primary" role="button">create</a>
+    </div>
+</div>
+
+{% endblock %}

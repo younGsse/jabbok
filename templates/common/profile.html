@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-3">
+    <div class="row my-3 border-bottom">
+        <div class="col-4">
+            <h4>Profile</h4>
+        </div>
+        <div class="col-8 text-right">
+            <a type="button" href="#" class="btn btn-outline-primary">delete</a>
+        </div>
+    </div>
+    <form method="post" class="post-form">
+        {% csrf_token %}
+        {% include 'form_errors.html' %}
+        <div class="form-group">
+            <label for="username">USER</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}" readonly>
+        </div>
+        <div class="row form-group">
+            <div class="col">
+                <label for="password1">PASSWORD</label>
+                <input type="password" class="form-control" name="password1" id="password1">
+            </div>
+            <div class="col">
+                <label for="password2">Confirm PASSWORD</label>
+                <input type="password" class="form-control" name="password2" id="password2">
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col">
+                <label for="first_name">First name</label>
+                <input type="text" name="first_name" id="first_name" class="form-control"
+                       value="{{ form.first_name.value|default_if_none:'' }}">
+            </div>
+            <div class="col">
+                <label for="last_name">Last name</label>
+                <input type="text" name="last_name" id="last_name" class="form-control"
+                       value="{{ form.last_name.value|default_if_none:'' }}">
+            </div>
+        </div>
+
+        <div class="form-email">
+            <label for="email">E-mail</label>
+            <input type="text" class="form-control" name="email" id="email"
+                   value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn btn-outline-primary my-3">modify</button>
+    </form>
+</div>
+
+{% endblock %}

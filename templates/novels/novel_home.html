@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <div class="row border-top">
+        <div class="col-2">
+            <ul class="list-group my-3 list-group-flush">
+                <a href="{% url 'novels:index' %}" class="list-group-item list-group-item-action">Home</a>
+                <strong class="list-group-item text-center" disabled>Novel List</strong>
+                {% if novel_list %}
+                {% for novel in novel_list %}
+                <a id="title" href="?title={{ novel }}" class="list-group-item list-group-item-action">{{ novel }}</a>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col border-left">
+            {% if subtitle_list %}
+            <div class="container">
+                <p>introduce novel {{ request.GET.title }}</p>
+            </div>
+            <div class="row justify-content-end my-1">
+                <a href="{% url 'novels:novel_create' %}" class="btn btn-primary">Upload</a>
+            </div>
+            <table class="table">
+                <thead>
+                <tr class="text-center">
+                    <th style="width:70%">subject</th>
+                    <th>creation time</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if subtitle_list %}
+                {% for title in subtitle_list %}
+                <tr class="text-center">
+                    <td class="text-left"><a href="{% url 'novels:detail' title.id %}">{{ title.subtitle }}</a></td>
+                    <td>{{ title.createDate }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr class="text-center">
+                    No content
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+            <ul class="pagination justify-content-center">
+                {% if subtitle_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?title={{ request.GET.title }}&page={{ subtitle_list.previous_page_number }}">prev</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">prev</a>
+                </li>
+                {% endif %}
+
+                {% for page_number in subtitle_list.paginator.page_range %}
+                {% if page_number >= subtitle_list.number|add:-5 and page_number <= subtitle_list.number|add:5 %}
+                    {% if page_number == subtitle_list.number %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?title={{ request.GET.title }}&page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?title={{ request.GET.title }}&page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+
+                {% if subtitle_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?title={{ request.GET.title }}&page={{ subtitle_list.next_page_number }}">next</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">next</a>
+                </li>
+                {% endif %}
+            </ul>
+            {% else %}
+            <p class="m-3">
+                <h1 class="text-center">Novel Home!</h1>
+            </p>
+            {% endif %}
+
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
